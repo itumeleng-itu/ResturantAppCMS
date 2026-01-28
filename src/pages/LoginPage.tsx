@@ -12,76 +12,90 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-900/20 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-900/20 rounded-full blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 w-full max-w-md p-8">
-        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl shadow-2xl p-8 transition-all duration-300 hover:border-white/20">
-          <div className="mb-10 text-center">
-            <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Welcome Back</h1>
-            <p className="text-gray-400">Sign in to access the admin dashboard</p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 ml-1">Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all duration-200"
-                placeholder="admin@restaurant.com"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-300 ml-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all duration-200"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-
-            {error && (
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center">
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 px-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-purple-500/20 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-2 cursor-pointer"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                'Sign In'
-              )}
-            </button>
-          </form>
-        </div>
+    <div className="min-h-screen bg-white flex items-center justify-center p-6 md:p-12">
+      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-600">
-            &copy; {new Date().getFullYear()} Restaurant CMS. All rights reserved.
-          </p>
+        {/* Left Side - Illustration */}
+        <div className="flex flex-col items-center lg:items-start space-y-8">
+          <h1 className="text-6xl font-extrabold text-[#F97316] tracking-tighter">the eatery.</h1>
+          
+          <div className="relative w-full max-w-[500px] aspect-square flex items-center justify-center">
+            {/* SVG Donut Illustration */}
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-2xl transform hover:scale-105 transition-transform duration-500">
+               {/* Dough */}
+               <circle cx="100" cy="100" r="80" fill="#FDBA74" />
+               <circle cx="100" cy="100" r="30" fill="white" />
+               
+               {/* Icing */}
+               <path d="M175,100c0,41.4-33.6,75-75,75s-75-33.6-75-75c0-15,5-30,15-40c5-5,15-10,15-20c0-10-5-15-5-20
+                        c0-10,10-15,20-15c5,0,10,5,15,5c10,0,15-10,15-20c10,0,20,5,30,10c5,5,10,5,15,5
+                        c15,0,30,10,35,25c5,10,10,15,10,25C185,75,175,85,175,100z" fill="#F472B6" />
+               <circle cx="100" cy="100" r="30" fill="white" />
+               
+               {/* Sprinkles */}
+               <rect x="60" y="60" width="10" height="4" rx="2" fill="#FEF08A" transform="rotate(45 60 60)" />
+               <rect x="130" y="70" width="10" height="4" rx="2" fill="#60A5FA" transform="rotate(-30 130 70)" />
+               <rect x="90" y="150" width="10" height="4" rx="2" fill="#A78BFA" transform="rotate(10 90 150)" />
+               <rect x="150" y="110" width="10" height="4" rx="2" fill="#34D399" transform="rotate(90 150 110)" />
+               <rect x="40" y="100" width="10" height="4" rx="2" fill="#F87171" transform="rotate(-15 40 100)" />
+               <rect x="110" y="40" width="10" height="4" rx="2" fill="#FEF08A" transform="rotate(60 110 40)" />
+               
+               {/* Bite mark */}
+               <circle cx="40" cy="150" r="18" fill="white" />
+               <circle cx="28" cy="135" r="15" fill="white" />
+               <circle cx="55" cy="160" r="15" fill="white" />
+            </svg>
+          </div>
         </div>
+
+        {/* Right Side - Login Card */}
+        <div className="flex justify-center lg:justify-end">
+             <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md border border-gray-100">
+                <div className="mb-8 text-center">
+                    <h2 className="text-3xl font-bold text-gray-800">Admin login.</h2>
+                    <p className="text-gray-400 text-sm mt-2">Enter your email below to log into your account</p>
+                </div>
+
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-600 uppercase">Email</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                            required
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-gray-600 uppercase">Password</label>
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                            required
+                        />
+                    </div>
+
+                    {error && (
+                        <div className="p-3 rounded-lg bg-red-50 text-red-500 text-sm text-center">
+                            {error}
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full py-4 bg-[#F97316] hover:bg-orange-600 text-white font-bold rounded-xl shadow-lg shadow-orange-500/30 transition-all transform active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+                    >
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
+                </form>
+             </div>
+        </div>
+
       </div>
     </div>
   );

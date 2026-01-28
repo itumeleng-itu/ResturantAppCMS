@@ -1,13 +1,16 @@
 ﻿import { Routes, Route } from 'react-router-dom';
 import LoginPage from '../pages/LoginPage';
 import Dashboard from '../pages/Dashboard';
-//import Home from '../pages/Home'
+import Inventory from '../pages/Inventory';
+import OrderManagement from '../pages/Orders';
 
 export function Router() {
   return (
     <Routes>
       <Route path='/' element={<LoginPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/inventory" element={<Inventory />} />
+      <Route path="/orders" element={<OrderManagement />} />
     </Routes>
   );
 }
