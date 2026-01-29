@@ -1,72 +1,138 @@
-﻿import { supabase } from '../lib/supabaseClient';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { supabase } from '../lib/supabaseClient'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
+interface ErrorDetails {
+  type: 'network' | 'auth' | 'profile' | 'permission' | 'unknown'
+  message: string
+  originalError?: unknown
+}
+
+function parseError(error: unknown): ErrorDetails {
+  const err = error as { message?: string; status?: number; relation?: string }
+
+  if (error instanceof TypeError && err.message?.includes('Failed to fetch')) {
+    return {
+      type: 'network',
+      message: 'Network error: Unable to reach Supabase. Check your internet connection.',
+      originalError: error,
+    }
+  }
+
+  if (err.message?.includes('ERR_CONNECTION_TIMED_OUT') || err.message?.includes('timeout')) {
+    return {
+      type: 'network',
+      message: 'Connection timeout: The server took too long to respond. Please try again.',
+      originalError: error,
+    }
+  }
+
+  if (err.message?.includes('Invalid login credentials')) {
+    return {
+      type: 'auth',
+      message: 'Invalid email or password. Please check your credentials.',
+      originalError: error,
+    }
+  }
+
+  if (err.status === 401 || err.status === 403) {
+    return {
+      type: 'auth',
+      message: `Authentication failed (${err.status}): ${err.message || 'Invalid credentials'}`,
+      originalError: error,
+    }
+  }
+
+  if (err.relation === 'profiles' || err.message?.includes('profiles')) {
+    return {
+      type: 'profile',
+      message: `Failed to fetch user profile: ${err.message || 'Profile not found'}`,
+      originalError: error,
+    }
+  }
+
+  if (err.message) {
+    return {
+      type: 'unknown',
+      message: err.message,
+      originalError: error,
+    }
+  }
+
+  return {
+    type: 'unknown',
+    message: 'An unexpected error occurred. Please try again.',
+    originalError: error,
+  }
+}
 
 export function useAuth() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const login = async (email: string, password: string) => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      console.log('Step 1: Attempting authentication...');
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
-      });
+      })
 
       if (authError) {
-        console.error('Authentication error:', authError);
-        setError(authError.message);
-        throw authError;
+        const errorDetails = parseError(authError)
+        setError(errorDetails.message)
+        throw authError
       }
 
-      console.log('Step 2: Authentication successful, user:', data.user?.id);
+      if (!data.user) {
+        throw new Error('No user data returned from authentication')
+      }
 
-      if (data.user) {
-        console.log('Step 3: Checking user profile...');
+      try {
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', data.user.id)
-          .single();
-
-        // DEBUGGING: Log raw response
-        console.log('profile', profile, 'profileError', profileError);
-        console.log('Profile data:', profile);
-        console.log('Profile error:', profileError);
+          .single()
 
         if (profileError) {
-          console.error('Profile fetch error:', profileError);
-          await supabase.auth.signOut();
-          setError(`Profile error: ${profileError.message}`);
-          return;
+          await supabase.auth.signOut()
+          const errorDetails = parseError(profileError)
+          setError(errorDetails.message)
+          return
         }
 
-        if (profile?.role !== 'admin') {
-          console.error('User role is not admin:', profile?.role);
-          await supabase.auth.signOut();
-          setError("Access denied: You do not have admin privileges.");
-          return;
+        if (!profile) {
+          await supabase.auth.signOut()
+          setError('User profile not found in database.')
+          return
         }
 
-        console.log('Step 4: Admin access confirmed, navigating to dashboard...');
-        navigate('/dashboard');
+        if (profile.role !== 'admin') {
+          await supabase.auth.signOut()
+          setError(`Access denied: Your role is '${profile.role}' but admin privileges are required.`)
+          return
+        }
+
+        navigate('/dashboard')
+      } catch (profileError: unknown) {
+        await supabase.auth.signOut()
+        const errorDetails = parseError(profileError)
+        setError(errorDetails.message)
       }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      if (!error.message) {
-        setError("An unexpected error occurred");
-      } else {
-        setError(error.message);
+    } catch (error: unknown) {
+      const err = error as { message?: string }
+      if (!err.message?.includes('signOut')) {
+        const errorDetails = parseError(error)
+        setError(errorDetails.message)
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  return { login, loading, error };
+  return { login, loading, error }
 }

@@ -80,8 +80,15 @@ export default function LoginPage() {
                     </div>
 
                     {error && (
-                        <div className="p-3 rounded-lg bg-red-50 text-red-500 text-sm text-center">
-                            {error}
+                        <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                            <div className="font-semibold mb-1 flex items-center gap-2">
+                                <span className="material-icons text-sm">error</span>
+                                Login Failed
+                            </div>
+                            <div className="text-red-600">{error}</div>
+                            <div className="text-xs text-red-500 mt-2 opacity-75">
+                                If this persists, please contact support.
+                            </div>
                         </div>
                     )}
 
