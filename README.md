@@ -23,13 +23,13 @@ A Content Management System (CMS) for restaurant administration. This applicatio
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/itumeleng-itu/ResturantAppCMS.git
 cd ResturantAppCMS
 ```
 
 ### 2. Install Dependencies
 
-```bash
+
 npm install
 ```
 
