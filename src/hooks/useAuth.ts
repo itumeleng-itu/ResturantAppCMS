@@ -1,94 +1,97 @@
-﻿import { supabase } from '../lib/supabaseClient'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+﻿import { supabase } from '../lib/supabaseClient';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface ErrorDetails {
-  type: 'network' | 'auth' | 'profile' | 'permission' | 'unknown'
-  message: string
-  originalError?: unknown
+  type: 'network' | 'auth' | 'profile' | 'permission' | 'unknown';
+  message: string;
+  originalError?: any;
 }
 
-function parseError(error: unknown): ErrorDetails {
-  const err = error as { message?: string; status?: number; relation?: string }
-
-  if (error instanceof TypeError && err.message?.includes('Failed to fetch')) {
+function parseError(error: any): ErrorDetails {
+  // Network/Fetch errors
+  if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
     return {
       type: 'network',
-      message: 'Network error: Unable to reach Supabase. Check your internet connection.',
+      message: 'Network error: Unable to reach Supabase. Check your internet connection or if the service is accessible.',
       originalError: error,
-    }
+    };
   }
 
-  if (err.message?.includes('ERR_CONNECTION_TIMED_OUT') || err.message?.includes('timeout')) {
+  if (error?.message?.includes('ERR_CONNECTION_TIMED_OUT') || error?.message?.includes('timeout')) {
     return {
       type: 'network',
-      message: 'Connection timeout: The server took too long to respond. Please try again.',
+      message: 'Connection timeout: The Supabase server took too long to respond. Please try again.',
       originalError: error,
-    }
+    };
   }
 
-  if (err.message?.includes('Invalid login credentials')) {
+  // Invalid credentials
+  if (error?.message?.includes('Invalid login credentials')) {
     return {
       type: 'auth',
       message: 'Invalid email or password. Please check your credentials.',
       originalError: error,
-    }
+    };
   }
 
-  if (err.status === 401 || err.status === 403) {
+  // Auth-related errors
+  if (error?.status === 401 || error?.status === 403) {
     return {
       type: 'auth',
-      message: `Authentication failed (${err.status}): ${err.message || 'Invalid credentials'}`,
+      message: `Authentication failed (${error?.status}): ${error?.message || 'Invalid credentials'}`,
       originalError: error,
-    }
+    };
   }
 
-  if (err.relation === 'profiles' || err.message?.includes('profiles')) {
+  // Profile fetch errors
+  if (error?.relation === 'profiles' || error?.message?.includes('profiles')) {
     return {
       type: 'profile',
-      message: `Failed to fetch user profile: ${err.message || 'Profile not found'}`,
+      message: `Failed to fetch user profile: ${error?.message || 'Profile not found'}`,
       originalError: error,
-    }
+    };
   }
 
-  if (err.message) {
+  // Generic message
+  if (error?.message) {
     return {
       type: 'unknown',
-      message: err.message,
+      message: error.message,
       originalError: error,
-    }
+    };
   }
 
   return {
     type: 'unknown',
     message: 'An unexpected error occurred. Please try again.',
     originalError: error,
-  }
+  };
 }
 
 export function useAuth() {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const login = async (email: string, password: string) => {
-    setLoading(true)
-    setError(null)
+    setLoading(true);
+    setError(null);
 
     try {
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email,
         password,
-      })
+      });
 
       if (authError) {
-        const errorDetails = parseError(authError)
-        setError(errorDetails.message)
-        throw authError
+        const errorDetails = parseError(authError);
+        setError(errorDetails.message);
+        throw authError;
       }
 
       if (!data.user) {
-        throw new Error('No user data returned from authentication')
+        throw new Error('No user data returned from authentication');
       }
 
       try {
@@ -96,43 +99,43 @@ export function useAuth() {
           .from('profiles')
           .select('role')
           .eq('id', data.user.id)
-          .single()
+          .single();
 
         if (profileError) {
-          await supabase.auth.signOut()
-          const errorDetails = parseError(profileError)
-          setError(errorDetails.message)
-          return
+          await supabase.auth.signOut();
+          const errorDetails = parseError(profileError);
+          setError(errorDetails.message);
+          return;
         }
 
         if (!profile) {
-          await supabase.auth.signOut()
-          setError('User profile not found in database.')
-          return
+          await supabase.auth.signOut();
+          setError('User profile not found in database.');
+          return;
         }
 
         if (profile.role !== 'admin') {
-          await supabase.auth.signOut()
-          setError(`Access denied: Your role is '${profile.role}' but admin privileges are required.`)
-          return
+          await supabase.auth.signOut();
+          setError(`Access denied: Your role is '${profile.role}' but admin privileges are required.`);
+          return;
         }
 
-        navigate('/dashboard')
-      } catch (profileError: unknown) {
-        await supabase.auth.signOut()
-        const errorDetails = parseError(profileError)
-        setError(errorDetails.message)
+        navigate('/dashboard');
+      } catch (profileError: any) {
+        await supabase.auth.signOut();
+        const errorDetails = parseError(profileError);
+        setError(errorDetails.message);
       }
-    } catch (error: unknown) {
-      const err = error as { message?: string }
-      if (!err.message?.includes('signOut')) {
-        const errorDetails = parseError(error)
-        setError(errorDetails.message)
+    } catch (error: any) {
+      // Only set error if not already set by previous handlers
+      if (!error.message?.includes('signOut')) {
+        const errorDetails = parseError(error);
+        setError(errorDetails.message);
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  return { login, loading, error }
+  return { login, loading, error };
 }

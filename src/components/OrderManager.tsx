@@ -94,19 +94,8 @@ export function OrderManager() {
                             </div>
                         </div>
                         
-                        <div className="flex gap-3 mt-4">
-                            <button 
-                                onClick={() => updateStatus(order.id, 'cancelled')}
-                                className="flex-1 py-2 px-3 border border-[#EA7C69] text-[#EA7C69] rounded-lg hover:bg-[#EA7C69]/10 text-sm font-semibold transition-colors"
-                            >
-                                Decline
-                            </button>
-                            <button 
-                                onClick={() => updateStatus(order.id, 'approved')}
-                                className="flex-1 py-2 px-3 bg-[#EA7C69] text-white rounded-lg hover:bg-[#e66551] text-sm font-semibold shadow-md shadow-[#EA7C69]/20 transition-colors"
-                            >
-                                Approve
-                            </button>
+                        <div className="text-xs text-gray-400 mt-4 px-3 py-2 bg-[#1F1D2B] rounded-lg">
+                            Pending customer approval
                         </div>
                     </div>
                 ))}

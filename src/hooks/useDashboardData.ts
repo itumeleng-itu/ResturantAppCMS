@@ -46,8 +46,6 @@ export function useDashboardData(): DashboardData {
                 .from('order_items')
                 .select('item_name, quantity')
 
-            console.log('All Order Items:', allOrderItems, 'Error:', itemsError)
-
             if (allOrderItems && allOrderItems.length > 0) {
                 const itemCounts: Record<string, number> = {}
                 allOrderItems.forEach((item: any) => {
@@ -61,10 +59,8 @@ export function useDashboardData(): DashboardData {
                     .sort((a, b) => b.count - a.count)
                     .slice(0, 3)
 
-                console.log('Final Sorted Top Items:', sortedItems)
                 setTopItems(sortedItems)
             } else {
-                console.log('No order items found in database')
                 setTopItems([])
             }
 

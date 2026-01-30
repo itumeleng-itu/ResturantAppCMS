@@ -43,15 +43,9 @@ export function OrderCard({ order, isExpanded, orderItems, onToggleExpand, onSta
               {isExpanded ? 'Hide Items' : 'View Items'}
             </button>
 
-            <select
-              value={order.status}
-              onChange={(e) => onStatusChange(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 font-medium"
-            >
-              {ALL_STATUSES.map(s => (
-                <option key={s} value={s}>{s.replace(/_/g, ' ').toUpperCase()}</option>
-              ))}
-            </select>
+            <div className="text-sm text-gray-500 font-medium px-3 py-2">
+              {order.status.replace(/_/g, ' ').toUpperCase()}
+            </div>
           </div>
         </div>
       </div>

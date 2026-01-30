@@ -1,6 +1,6 @@
 # Restaurant App CMS
 
-A Content Management System (CMS) for restaurant administration. This application allows restaurant administrators to manage orders, inventory, and view analytics.
+A comprehensive Content Management System (CMS) for restaurant administration. This application empowers restaurant administrators to efficiently manage orders, inventory, reservations, and view detailed analytics with real-time updates.
 
 ## Tech Stack
 
@@ -29,7 +29,7 @@ cd ResturantAppCMS
 
 ### 2. Install Dependencies
 
-
+```bash
 npm install
 ```
 
@@ -153,10 +153,21 @@ All component files are kept under 200 lines of code for maintainability.
 
 ## Features
 
-- **Dashboard**: Overview of revenue, orders, and analytics
-- **Order Management**: View and update order statuses with real-time updates
-- **Inventory Management**: Add, edit, and delete menu items
-- **Authentication**: Secure admin-only access
+### Core Functionality
+- **Dashboard**: Real-time overview of revenue, pending orders, top-selling items, and key metrics
+- **Order Management**: View all orders with filtering by status; track order progress through the lifecycle
+- **Inventory Management**: Add, edit, and delete menu items with category organization
+- **Reservations**: Manage customer reservations and booking information
+- **User Profile**: Admin profile management with avatar support
+- **Authentication**: Secure admin-only access with role-based authorization
+- **Real-time Updates**: Live data synchronization using Supabase subscriptions
+
+### Admin Capabilities
+- View order details (customer info, items, amounts, status)
+- Monitor inventory levels and menu availability
+- Track revenue and sales metrics
+- Manage menu categories and items
+- Monitor reservations and availability
 
 ## Database Schema
 
