@@ -1,15 +1,15 @@
 import type { Order, OrderItem } from '../../types/orders'
-import { getStatusColor, ALL_STATUSES } from '../../types/orders'
+import { getStatusColor } from '../../types/orders'
 
 interface OrderCardProps {
   order: Order
   isExpanded: boolean
   orderItems?: OrderItem[]
   onToggleExpand: () => void
-  onStatusChange: (status: string) => void
+  onStatusChange?: (status: string) => void
 }
 
-export function OrderCard({ order, isExpanded, orderItems, onToggleExpand, onStatusChange }: OrderCardProps) {
+export function OrderCard({ order, isExpanded, orderItems, onToggleExpand }: OrderCardProps) {
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
       <div className="p-6 flex flex-col md:flex-row justify-between gap-4">

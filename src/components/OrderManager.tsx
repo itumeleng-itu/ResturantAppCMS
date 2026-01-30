@@ -42,19 +42,6 @@ export function OrderManager() {
     setLoading(false);
   };
 
-  const updateStatus = async (id: string, newStatus: string) => {
-    const { error } = await supabase
-      .from('orders')
-      .update({ status: newStatus })
-      .eq('id', id);
-
-    if (error) {
-        alert('Error updating order: ' + error.message);
-    } else {
-        // Optimistic update
-        setOrders(orders.map(o => o.id === id ? { ...o, status: newStatus } : o));
-    }
-  };
 
   const pendingOrders = orders.filter(o => o.status === 'pending');
   const otherOrders = orders.filter(o => o.status !== 'pending');

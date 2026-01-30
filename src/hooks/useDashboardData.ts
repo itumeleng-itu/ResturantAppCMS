@@ -42,7 +42,7 @@ export function useDashboardData(): DashboardData {
             }
 
             // 2. Fetch Top Items (Top 3) - directly from order_items
-            const { data: allOrderItems, error: itemsError } = await supabase
+            const { data: allOrderItems } = await supabase
                 .from('order_items')
                 .select('item_name, quantity')
 
